@@ -20,7 +20,7 @@ var sockjs = require('sockjs');
 var http = require("http");
 var url = require("url");
 
-function start(route, handle) {
+function start(host,port, route, handle) {
   function onRequest(request, response) {
     var pathname = url.parse(request.url).pathname;
     // Don't bother for favicon.ico
@@ -45,11 +45,8 @@ function start(route, handle) {
 	require('./servlets/incremental-search-servlet').install(server);
 	require('./servlets/incremental-file-search-servlet').install(server);
 	
-	var host = process.argv[0] || process.env.IDE_HOST || 'localhost'
-	var port= process.argv[1] || process.env.IDE_PORT || 7261
-
 	server.listen(port, host); 
-	console.log("Server has started.");
+	console.log("Server has started at " + host + ":" + port + ".");
   
   
 	// https://github.com/Worlize/WebSocket-Node

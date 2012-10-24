@@ -55,7 +55,7 @@ define([], function() {
 				var xhrobj = new XMLHttpRequest();
 				try {
 					var args = JSON.stringify([handle]);
-					var url = 'http://' + __URL + '+path+'?args='+ encodeURIComponent(args);
+					var url = 'http://' + __URL + path+'?args='+ encodeURIComponent(args);
 					// console.log("url is "+url);
 					xhrobj.onreadystatechange= function() {
 				        if(xhrobj.readyState === 4) { // 4 means content has finished loading		
@@ -82,7 +82,7 @@ define([], function() {
 				var xhrobj = new XMLHttpRequest();
 				try {
 					var args = JSON.stringify([arg1, arg2]);
-					var url = 'http://' + __URL + '+path+'?args='+ encodeURIComponent(args);
+					var url = 'http://' + __URL + path+'?args='+ encodeURIComponent(args);
 					// console.log("url is "+url);
 					xhrobj.open("GET",url,true);
 					xhrobj.send();
@@ -105,7 +105,7 @@ define([], function() {
 				var xhrobj = new XMLHttpRequest();
 				try {
 					var args = JSON.stringify([arg1]);
-					var url = 'http://' + __URL + '+path+'?args='+ encodeURIComponent(args);
+					var url = 'http://' + __URL +path+'?args='+ encodeURIComponent(args);
 					// console.log("url is "+url);
 					xhrobj.open("GET",url,true);
 					xhrobj.send();
@@ -128,7 +128,7 @@ define([], function() {
 				var xhrobj = new XMLHttpRequest();
 				try {
 					var args = JSON.stringify([arg1, arg2]);
-					var url = 'http://' + __URL + '+path+'?args='+ encodeURIComponent(args);
+					var url = 'http://' + __URL +path+'?args='+ encodeURIComponent(args);
 					// console.log("url is "+url);
 					xhrobj.open("GET",url,true);
 					xhrobj.send();

@@ -5,22 +5,8 @@
 	<title>Scripted</title>
 	<link rel="stylesheet" type="text/css" href="css/main.css" />
 	<script>
-		var PORT = 7261;
-		var HOST = 'localhost';
-		var args = window.location.search.slice(1).slit("&");
-		if(args){
-			for(var i=0;i<args.length;i++){
-				var a = args[i].split("=");
-				if(a){
-					if(a[0]==="port"){
-						PORT = parseInt(a[1]);
-					}
-					if(a[0]==="host"){
-						HOST = a[1];
-					}
-				}
-			}		
-		}
+		var PORT = window.location.port || 7261;
+		var HOST = window.location.hostname || 'localhost';
 		var __URL = HOST + ':' + PORT;
 	</script>
 	<script data-main="scripts/setup.js" src="scripts/lib/requirejs/require.js"></script>
