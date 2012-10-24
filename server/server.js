@@ -45,7 +45,10 @@ function start(route, handle) {
 	require('./servlets/incremental-search-servlet').install(server);
 	require('./servlets/incremental-file-search-servlet').install(server);
 	
-	server.listen(7261, "127.0.0.1" /* only accepting connections from localhost */); 
+	var host = process.argv[0] || process.env.IDE_HOST || 'localhost'
+	var port= process.argv[1] || process.env.IDE_PORT || 7261
+
+	server.listen(port, host); 
 	console.log("Server has started.");
   
   

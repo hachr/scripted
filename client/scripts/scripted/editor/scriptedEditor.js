@@ -311,7 +311,7 @@ mHtmlContentAssist, mCssContentAssist) {
 					// type settings to dispositions, for funky charsets
 					var boundary = Math.random().toString().substr(2);
 					//var url = 'http://localhost:7261/put?file=' + window.location.search.substr(1);
-					var url = 'http://localhost:7261/put?file=' + filePath;
+					var url = 'http://' + __URL + '/put?file=' + filePath;
 					//				console.log("url is "+url);
 					//				console.log("Saving file, length is "+text.length);
 					xhr.open("POST", url, true);
@@ -469,7 +469,7 @@ mHtmlContentAssist, mCssContentAssist) {
 		
 		var xhrobj = new XMLHttpRequest();
 		try {
-			var url = 'http://localhost:7261/get?file=' + filePath;
+			var url = 'http://' + __URL + '/get?file=' + filePath;
 			//console.log("Getting contents for " + url);
 			xhrobj.open("GET", url, false); // synchronous xhr
 			

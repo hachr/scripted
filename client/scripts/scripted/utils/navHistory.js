@@ -132,7 +132,7 @@ function(mEditor, mKeyBinding, mSearchClient, mOpenResourceDialog, mOpenOutlineD
 	var isBinary = function(filepath) {
 		try {
 			var xhrobj = new XMLHttpRequest();
-			var url = 'http://localhost:7261/get?file=' + filepath;
+			var url = 'http://' + __URL + '/get?file=' + filepath;
 			xhrobj.open("GET", url, false); // synchronous xhr
 			xhrobj.send();
 			if (xhrobj.readyState === 4) {
@@ -359,7 +359,7 @@ function(mEditor, mKeyBinding, mSearchClient, mOpenResourceDialog, mOpenOutlineD
 			}
 			else {
 				constructedPath += crumbs[i] + '/';
-				url = 'http://localhost:7261/fs_list/'+constructedPath.substring(0, constructedPath.length-1);
+				url = 'http://' + __URL + '/fs_list/'+constructedPath.substring(0, constructedPath.length-1);
 				xhrobj = new XMLHttpRequest();
 				xhrobj.open("GET",url,false); // TODO naughty? synchronous xhr
 				xhrobj.send();
