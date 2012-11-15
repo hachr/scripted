@@ -20,6 +20,9 @@ var fs = require("fs");
 var formidable = require("formidable");
 var url = require('url');
 
+//default path so people can't access outside of this
+var rootPath = "/home/pi/depot/node";
+
 // TODO handle binary files
 /*
  * Retrieve a specified field, request format: http://localhost:7261/get?file=XXX
@@ -45,7 +48,10 @@ function isBinary (buffer){
 
 function get(response, request) {
   var file = url.parse(request.url,true).query.file;
-  //console.log("Processing get request for "+file);
+  if(!!rootPath){
+    file = rootPath + file;
+  }
+  console.log(">>>>> Processing get request for "+file);
   fs.readFile(file, function(err,data){
     if(err) {
 		if (err.errno === 28 /*EISDIR*/) {
@@ -119,6 +125,10 @@ function fs_list(response, request, path) {
 		var data = JSON.parse(obj2.query);
 		pathToUse = data.name;
 	}
+	
+	//restrict to our configured path
+	pathToUse = rootPath + pathToUse;
+	
 	//console.log("fs_list request for: "+pathToUse);
 	
 	/*
@@ -152,26 +162,27 @@ function fs_list(response, request, path) {
 						var kid = {
 							name:files[i],
 							directory:kidstat.isDirectory(),
-							Location:kidpath,
+							//we remove the rootPath
+							Location: (kidpath.slice(0,rootPath.length) == rootPath) ? kidpath.slice(rootPath.length) : kidpath,
 							size:0,
 							parentDir:filename
 						};
 						if (kidstat.isDirectory()) {
-							kid.ChildrenLocation = kidpath;
+							kid.ChildrenLocation = (kidpath.slice(0,rootPath.length) == rootPath) ? kidpath.slice(rootPath.length) : kidpath;
 						}
 						kids.push(kid);
 					} catch (e) {
 					  console.log("problems stat'ing "+kidpath);
 					}
 				}
-    
+                                var dirPath = pathToUse.slice(rootPath.length); 
 				var retval = {
 					name:filename,
-					path:pathToUse,
+					path:dirPath,
 					parentDir:directory,
 					size:size,
 					directory:true,
-					Location:pathToUse,//filename,
+					Location:dirPath,//filename,
 					children:kids,
 					modified:33};
 				var respons = JSON.stringify(retval);
@@ -203,6 +214,9 @@ function fs_list(response, request, path) {
 // write a file
 function put(response, request) {
   var file = url.parse(request.url,true).query.file;
+  if(!!rootPath){
+    file = rootPath + file;
+  }
   console.log(">> Processing put request for "+file);
   if (request.method.toLowerCase() === 'post') {
     // parse a file upload
@@ -240,7 +254,15 @@ function put(response, request) {
   }
 }
 
+function path(root){
+	console.log("setting the path: " + root);
+	if(!!root){
+		rootPath = root;
+		console.log('new root is: ' + rootPath);
+	}
+}
+
 exports.get = get;
 exports.put = put;
 exports.fs_list = fs_list;
-
+exports.path = path;
