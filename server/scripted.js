@@ -40,7 +40,7 @@ servlets.register("/fs_list", requestHandlers.fs_list);
 
 var host = process.argv[2] || process.env.IDE_HOST || 'localhost';
 var port= process.argv[3] || process.env.IDE_PORT || 7261;
-var path = process.argv[4] || process.env.IDE_PATH || '~/';
+var path = process.argv[4] || process.env.IDE_PATH || process.env.HOME || '/tmp/';
 
 console.log('host: ' + host);
 console.log('port: ' + port);

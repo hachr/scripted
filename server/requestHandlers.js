@@ -122,8 +122,12 @@ function fs_list(response, request, path) {
 	} else {
 		var obj2 = url.parse(request.url,true).query;
 		//console.log("fsq: request url query is "+url.parse(request.url,true).query);
-		var data = JSON.parse(obj2.query);
-		pathToUse = data.name;
+		try {
+			var data = JSON.parse(obj2);
+			pathToUse = data.name;
+		} catch (e) {
+			pathToUse = "/";
+		}
 	}
 	
 	//restrict to our configured path
