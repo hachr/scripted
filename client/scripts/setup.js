@@ -316,6 +316,15 @@ require(["scripted/editor/scriptedEditor", "scripted/navigator/explorer-table", 
 		
 		$('#side_toggle').on('click', mNavHistory.toggleSidePanel);
 
+		$('#save_run').on('click', function() {
+			window.editor.saveCurrentFile();
+			var replaceParams = require('scripted/exec/param-resolver').forEditor(window.editor);
+			var cmdText = $('#run_cmd').val();
+			var dateFunction = require("scripted/exec/exec-shared").makeExecFunction({cmd:cmdText});
+			dateFunction(replaceParams);
+			//window.editor.execCommand("date > ~/Desktop/theDate");
+		});
+
 		/*Position elements correctly on page*/
 		var footer_height = $('footer').outerHeight();
 		var header_height = $('header').outerHeight();

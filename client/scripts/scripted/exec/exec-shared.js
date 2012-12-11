@@ -74,7 +74,7 @@ define(['require', 'servlets/exec-client'], function (require) {
 				cmd: cmdSpec
 			};
 		}
-		cmdSpec.cwd = cmdSpec.cwd || "${projectDir}";
+		//cmdSpec.cwd = cmdSpec.cwd || "${projectDir}";
 		cmdSpec.timeout = cmdSpec.timeout || 5000;
 		
 		return function(replaceParams) {

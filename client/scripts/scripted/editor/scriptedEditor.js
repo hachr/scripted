@@ -201,6 +201,58 @@ mHtmlContentAssist, mCssContentAssist) {
 			return formatted;
 		};
 
+		var saveCurrentFile = function() {
+			var text = editor.getTextView().getText();
+			var xhr = new XMLHttpRequest();
+			try {
+				// Make a multipart form submission otherwise the data gets encoded (CRLF pairs inserted for newlines)
+				// As described here: http://www.w3.org/TR/html4/interact/forms.html - may need to add some content
+				// type settings to dispositions, for funky charsets
+				var boundary = Math.random().toString().substr(2);
+				//var url = 'http://localhost:7261/put?file=' + window.location.search.substr(1);
+				var url = 'http://' + __URL + '/put?file=' + filePath;
+				//				console.log("url is "+url);
+				//				console.log("Saving file, length is "+text.length);
+				xhr.open("POST", url, true);
+				xhr.setRequestHeader('Content-Type', 'multipart/form-data;charset=utf-8; boundary=' + boundary);
+				var payload = '';
+				payload += '--' + boundary + '\r\n';
+				payload += 'Content-Disposition: form-data; name="data"\r\n\r\n';
+				payload += text;
+				payload += '\r\n';
+				payload += '--' + boundary + '\r\n';
+				payload += 'Content-Disposition: form-data; name="length"\r\n\r\n';
+				payload += text.length;
+				payload += '\r\n';
+				payload += '--' + boundary + '--';
+				// console.log("payload is "+payload);
+/*
+				xhrobj.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+				xhrobj.setRequestHeader('Connection','close');
+				*/
+				//var params = "file="+filePath+"&"text=";
+				xhr.onreadystatechange = function() {
+					if (xhr.readyState === 4) {
+						if (xhr.status === 200) {  
+							// console.log("Saved OK I think: "+xhr.status);
+							editor.setInput(null, null, null, true);
+							afterSaveSuccess(filePath);
+						} else {
+							var message = "Failed to save the file. RC:" + xhr.status + " Details:" + xhr.responseText;
+							statusReporter(message, true);
+							console.error(message);
+						}
+						postSave(text);
+					}
+				};
+				xhr.send(payload);
+			} catch (e) {
+				console.log("xhr failed " + e);
+			}
+			return true;
+
+		}
+
 		var keyBindingFactory = function(editor, keyModeStack, undoStack, contentAssist) {
 
 			// Create keybindings for generic editing
@@ -303,54 +355,7 @@ mHtmlContentAssist, mCssContentAssist) {
 			// save binding
 			editor.getTextView().setKeyBinding(new mKeyBinding.KeyBinding("s", true), "Save");
 			editor.getTextView().setAction("Save", function() {
-				var text = editor.getTextView().getText();
-				var xhr = new XMLHttpRequest();
-				try {
-					// Make a multipart form submission otherwise the data gets encoded (CRLF pairs inserted for newlines)
-					// As described here: http://www.w3.org/TR/html4/interact/forms.html - may need to add some content
-					// type settings to dispositions, for funky charsets
-					var boundary = Math.random().toString().substr(2);
-					//var url = 'http://localhost:7261/put?file=' + window.location.search.substr(1);
-					var url = 'http://' + __URL + '/put?file=' + filePath;
-					//				console.log("url is "+url);
-					//				console.log("Saving file, length is "+text.length);
-					xhr.open("POST", url, true);
-					xhr.setRequestHeader('Content-Type', 'multipart/form-data;charset=utf-8; boundary=' + boundary);
-					var payload = '';
-					payload += '--' + boundary + '\r\n';
-					payload += 'Content-Disposition: form-data; name="data"\r\n\r\n';
-					payload += text;
-					payload += '\r\n';
-					payload += '--' + boundary + '\r\n';
-					payload += 'Content-Disposition: form-data; name="length"\r\n\r\n';
-					payload += text.length;
-					payload += '\r\n';
-					payload += '--' + boundary + '--';
-					// console.log("payload is "+payload);
-	/*
-					xhrobj.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-					xhrobj.setRequestHeader('Connection','close');
-					*/
-					//var params = "file="+filePath+"&"text=";
-					xhr.onreadystatechange = function() {
-						if (xhr.readyState === 4) {
-							if (xhr.status === 200) {  
-								// console.log("Saved OK I think: "+xhr.status);
-								editor.setInput(null, null, null, true);
-								afterSaveSuccess(filePath);
-							} else {
-								var message = "Failed to save the file. RC:" + xhr.status + " Details:" + xhr.responseText;
-								statusReporter(message, true);
-								console.error(message);
-							}
-							postSave(text);
-						}
-					};
-					xhr.send(payload);
-				} catch (e) {
-					console.log("xhr failed " + e);
-				}
-				return true;
+				return saveCurrentFile();
 			});
 			
 		};
@@ -416,6 +421,7 @@ mHtmlContentAssist, mCssContentAssist) {
 		});
 
 		editor.jsContentAssistant = jsContentAssistant;
+		editor.saveCurrentFile = saveCurrentFile;
 		
 		editor.addEventListener("DirtyChanged", function(evt) {
 			dirtyIndicator = editor.isDirty()?"You have unsaved changes.  ":"";
