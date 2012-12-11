@@ -45,7 +45,11 @@ function start(host,port, route, handle) {
 	require('./servlets/incremental-search-servlet').install(server);
 	require('./servlets/incremental-file-search-servlet').install(server);
 	
-	server.listen(port, host); 
+	if (host == "*") {
+		server.listen(port);
+	} else {
+		server.listen(port, host); 
+	}
 	console.log("Server has started at " + host + ":" + port + ".");
   
   

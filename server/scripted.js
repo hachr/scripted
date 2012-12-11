@@ -38,7 +38,7 @@ servlets.register("/put", requestHandlers.put);
 // Request information about a file/directory
 servlets.register("/fs_list", requestHandlers.fs_list);
 
-var host = process.argv[2] || process.env.IDE_HOST || 'localhost';
+var host = process.argv[2] || process.env.IDE_HOST || '*';
 var port= process.argv[3] || process.env.IDE_PORT || 7261;
 var path = process.argv[4] || process.env.IDE_PATH || process.env.HOME || '/tmp/';
 
