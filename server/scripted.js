@@ -28,7 +28,7 @@ var requestHandlers = require("./requestHandlers");
 //require("./servlets/hello");
 require("./servlets/listFiles");
 require("./servlets/jsdepend-servlet");
-require("./servlets/exec-servlet");
+var execSerlvet = require("./servlets/exec-servlet");
 require("./servlets/kill");
 
 // Request to read a file (returns contents)
@@ -47,4 +47,5 @@ console.log('port: ' + port);
 console.log('path: ' + path);
 
 requestHandlers.path(path);
+execSerlvet.path(path);
 server.start(host,port,router.route, servlets.lookup);

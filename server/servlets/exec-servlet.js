@@ -18,6 +18,17 @@ var makeRequestHandler = require('./servlet-utils').makeRequestHandler;
 
 var cpExec = require('child_process').exec;
 
+//default path so people can't access outside of this
+var rootPath = "/home/pi/depot/node";
+
+function path(root){
+	console.log("setting the path: " + root);
+	if(!!root){
+		rootPath = root;
+		console.log('new root is: ' + rootPath);
+	}
+}
+
 function exec(cmd, callback, errback) {
 
 	//cmd looks like this:
@@ -25,9 +36,14 @@ function exec(cmd, callback, errback) {
 
 	var options = cmd; 
 	cmd = cmd.cmd;
+	if (options['cwd'] == '.') {
+		options['cwd'] = rootPath;
+	}
 
 	/*var process = */cpExec(cmd, options, callback);
 }
 exec.remoteType = ['JSON', 'callback'];
 
 servlets.register('/exec', makeRequestHandler(exec));
+
+exports.path = path;
